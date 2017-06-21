@@ -25,7 +25,8 @@ app.use(bodyParser.json());
 
 // routes
 app.use('/users', require('./controllers/users.controller'));
-app.use('/macaddresses', require('./controllers/macaddresses.controller'));
+app.use('/macaddr', require('./controllers/macaddr.controller'));
+app.use('/snumbers', require('./controllers/snum.controller'));
 
 // start server
 var port = process.env.NODE_ENV === 'production' ? 80 : 4000;

@@ -1,20 +1,19 @@
 ﻿var config = require('config.json');
 var express = require('express');
 var router = express.Router();
-var macService = require('services/macaddresses.service');
+var macService = require('services/macaddr.service');
 
 // routes
 
 router.get('/', getAll);
 router.post('/create', create);
-//router.get('/current', getCurrent);
+//router.get('/current', read);
 //router.put('/:_id', update);
 //router.delete('/:_id', _delete);
 
 module.exports = router;
 
 function getAll(req, res) {
-  console.log("Inside Get All..")
     macService.getAll()
         .then(function (macaddresses) {
             res.send(macaddresses);
@@ -24,7 +23,7 @@ function getAll(req, res) {
         });
 }
 
-function getCurrent(req, res) {
+function read(req, res) {
     macService.getById(req.macaddress.sub)
         .then(function (macaddress) {
             if (macaddress) {
