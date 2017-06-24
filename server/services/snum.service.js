@@ -6,6 +6,7 @@ var Q = require('q');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 var bodyParser = require('body-parser');
+var SerialNumber = require("models/snumModel")
 db.bind('snumbers');
 
 var service = {};
@@ -18,13 +19,13 @@ service.create = create;
 module.exports = service;
 function getAll() {
     var deferred = Q.defer();
-    db.macaddresses.find().toArray(function (err, macaddresses) {
+    db.snumbers.find().toArray(function (err, snumbers) {
         if (err) {
-          deferred.reject(err.name + ': ' + err.message);
-          console.log("Err..")
+            deferred.reject(err.name + ': ' + err.message);
+            console.log("Err..")
         }
 
-        deferred.resolve(macaddresses);
+        deferred.resolve(snumbers);
     });
     return deferred.promise;
 }
@@ -34,12 +35,13 @@ function create(snumParam) {
     var deferred = Q.defer();
     createSerialNumbers();
     function createSerialNumbers() {
-        var obj = snumParam;
-        obj.isAssigned=false;
-        obj.createdDate=new Date();
+        var obj = snumParam;       
+        snumParam.map(function (element) {
+            element.supplierId = "Wistron";//get the input from facility user?
+            element.uploadedDate = new Date();
+        });
         db.snumbers.insertMany(
-            obj,
-            function (err, doc) {
+            obj, function (err, doc) {
                 if (err) deferred.reject(err.name + ': ' + err.message);
 
                 deferred.resolve();
