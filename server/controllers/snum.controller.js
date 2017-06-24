@@ -36,7 +36,7 @@ function getById(req, res) {
             res.status(400).send(err);
         });
 }
-function create(req, res) {
+function create(req, res) {   
     sNumService.create(req.body)
         .then(function () {
             res.sendStatus(200);

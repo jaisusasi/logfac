@@ -15,7 +15,8 @@ module.exports = router;
 
 function getAll(req, res) {
     macService.getAll()
-        .then(function (macaddresses) {
+        .then(function (macaddresses) {            
+            console.log(macaddresses)
             res.send(macaddresses);
         })
         .catch(function (err) {
