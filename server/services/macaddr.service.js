@@ -10,6 +10,7 @@ var service = {};
 
 service.getAll = getAll;
 service.create = create;
+service.GetRequiredMacAddressBlock = GetRequiredMacAddressBlock;
 //service.update = update;
 //service.delete = _delete;
 
@@ -19,13 +20,24 @@ function getAll() {
 
     db.macaddresses.find().toArray(function (err, macaddresses) {
         if (err) {
-          deferred.reject(err.name + ': ' + err.message);
-          console.log("Err..")
+            deferred.reject(err.name + ': ' + err.message);
+            console.log("Err..")
         }
-
         deferred.resolve(macaddresses);
     });
 
+    return deferred.promise;
+}
+
+function GetRequiredMacAddressBlock(count) {
+    var deferred = Q.defer();
+    var result;
+    db.macaddresses.find({ isAssigned: false },{_id: 0,macAddress:1}).limit(count).toArray(function (err, macaddresses) {
+        if (err) {
+            console.log("Err..")
+        }
+        deferred.resolve(macaddresses);
+    });
     return deferred.promise;
 }
 
@@ -37,8 +49,12 @@ function create(macaddrParam) {
 
     function createMacAddress() {
         var obj = macaddrParam;
-        obj.isAssigned=false;
-        obj.createdDate=new Date();
+        macaddrParam.map(function(element)
+        {
+            element.isAssigned = false;
+            element.createdDate = new Date();
+        });
+
         db.macaddresses.insert(
             obj,
             function (err, doc) {
